@@ -17,13 +17,15 @@ public class GetResumeCounter
     private readonly ILogger<GetResumeCounter> _logger; 
 
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get","post", Route = null)] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Function, "get","post")] HttpRequestData req,
 
         //CosmosDB input binding 
-        [CosmosDBTrigger(
+        [CosmosDBInput(
             databaseName: "Counter",
             containerName: "AzureResume",
-            Connection = "CosmosDBConnection")]
+            Connection = "CosmosDBConnection",
+            Id="{id}",
+            PartitionKey = "{/id}")]
         IEnumerable<Counter> inputItems)
         
         //CosmosDB output binding
