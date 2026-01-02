@@ -1,11 +1,10 @@
 using Newtonsoft.Json;
 
-namespace Company.Function
+namespace api
 {
     public class Counter
     {
-        public string Id { get; set; }
-
-        public int Count { get; set; }
+        public string id { get; set; }
+        public int count { get; set; }
     }
 }

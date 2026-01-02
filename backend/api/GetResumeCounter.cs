@@ -10,11 +10,12 @@ using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using System.Net;
 
-namespace Company.Function;
+namespace api;
 
 public class GetResumeCounter
 {
-    private readonly ILogger<GetResumeCounter> _logger; 
+    private readonly ILogger<GetResumeCounter> _logger;
+    //private readonly CosmosClient _cosmosClient;
 
     public async Task<HttpResponseData> Run(
         [HttpTrigger(AuthorizationLevel.Function, "get","post")] HttpRequestData req,
