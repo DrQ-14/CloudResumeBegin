@@ -1,8 +1,6 @@
 using System.Configuration;
 using System.Reflection.Metadata;
 using Grpc.Core;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -14,31 +12,30 @@ namespace api;
 
 public class GetResumeCounter
 {
-    private readonly ILogger<GetResumeCounter> _logger;
-    //private readonly CosmosClient _cosmosClient;
-
+    //private readonly ILogger<GetResumeCounter> _logger;
+    
+    //[Function("GetResumeCounter")]
+    //CosmosDBOutput binding to write data to CosmosDB
+    [CosmosDBOutput(
+        databaseName: "AzureResume",
+        containerName: "cloud-resume-for-me",
+        Connection = "CosmosDBConnection")]
     public async Task<HttpResponseData> Run(
+        //Http Trigger
         [HttpTrigger(AuthorizationLevel.Function, "get","post")] HttpRequestData req,
 
-        //CosmosDB input binding 
+        //CosmosDB input binding
         [CosmosDBInput(
-            databaseName: "Counter",
-            containerName: "AzureResume",
+            databaseName: "AzureResume",
+            containerName: "cloud-resume-for-me",
             Connection = "CosmosDBConnection",
             Id="{id}",
-            PartitionKey = "{/id}")]
+            PartitionKey = "{id}")]
         IEnumerable<Counter> inputItems)
-        
-        //CosmosDB output binding
-        /*[CosmosDBTrigger(
-            databaseName: "Counter", 
-            containerName: "AzureResume",
-            Connection = "cloud-resume-for-me")]
-            IAsyncCollector<Counter> outputItem
-        )*/
+
     {
         var response = req.CreateResponse(HttpStatusCode.OK);
-        await response.WriteAsJsonAsync(inputItems);
+        await response.WriteStringAsync("The api has been properly returned");
         return response;
     }
 }
