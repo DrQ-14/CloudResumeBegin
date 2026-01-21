@@ -1,10 +1,8 @@
-using Newtonsoft.Json;
-
 namespace api
 {
-    public class Counter
+    public class CosmosDBCounter
     {
-        public string id { get; set; }
-        public int count { get; set; }
+        public string id { get; set; } = default!;
+        public int Count { get; set; }
     }
 }
