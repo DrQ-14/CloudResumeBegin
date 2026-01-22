@@ -9,7 +9,7 @@ public class GetResumeCounter
 {
     [CosmosDBOutput(
 databaseName: "AzureResume",
-containerName: "cloud-resume-for-me",
+containerName: "Counter",
 Connection = "CosmosDBConnection")]
     public CosmosDBCounter outputItem { get; set; } = default!;
     //private readonly ILogger<GetResumeCounter> _logger;
@@ -18,14 +18,15 @@ Connection = "CosmosDBConnection")]
     //CosmosDBOutput binding to write data to CosmosDB
     public HttpResponseData Run(
         //Http Trigger
-        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "counter/{id}")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = "counter/1")] HttpRequestData req,
+        string id,
         //CosmosDB input binding
         [CosmosDBInput(
             databaseName: "AzureResume",
-            containerName: "cloud-resume-for-me",
+            containerName: "Counter",
             Connection = "CosmosDBConnection",
-            Id="{id}",
-            PartitionKey = "{id}")]
+            Id="1",
+            PartitionKey = "1")]
         IEnumerable<CosmosDBCounter> inputItems)
 
     {
@@ -38,10 +39,22 @@ Connection = "CosmosDBConnection")]
             response.StatusCode = HttpStatusCode.NotFound;
             response.WriteString("CosmosDB item not found.\n");
             response.WriteString($"InputItems count: {inputItems?.Count() ?? 0}\n");
-            
+
             var routeId = req.Url.Segments.Last().TrimEnd('/');
             response.WriteString($"Request URL: {req.Url}\n");
             response.WriteString($"Route id (last segment): {routeId}\n");
+
+            response.WriteString($"Creating new CosmosDB entry:\n");
+
+            counter = new CosmosDBCounter
+            {
+                id = routeId,
+                Count = 1
+            };
+
+            outputItem = counter;
+            response.WriteString($"Current counter value: {counter.Count}\n");
+            response.WriteString($"The current counter Id is: {counter.id}\n");
         }
         else
         {
@@ -50,7 +63,7 @@ Connection = "CosmosDBConnection")]
             response.StatusCode = HttpStatusCode.OK;
             response.WriteString($"Current counter value: {counter.Count}\n");
             response.WriteString($"The current counter Id is: {counter.id}\n");
-            response.WriteString("DEBUG: Cosmos DB item retrieved successfully.\n");
+            response.WriteString("Cosmos DB item retrieved successfully.\n");
         }
         //response = req.CreateResponse(HttpStatusCode.OK);
         return response;
