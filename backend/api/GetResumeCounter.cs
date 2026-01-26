@@ -17,11 +17,10 @@ private readonly ILogger<GetResumeCounter> _logger;
     }
 
     [CosmosDBOutput(
-databaseName: "AzureResume",
-containerName: "Counter",
-Connection = "CosmosDBConnection")]
-    public CosmosDBCounter OutputItem { get; set; } = default!;
-    //private readonly ILogger<GetResumeCounter> _logger;
+        databaseName: "AzureResume",
+        containerName: "Counter",
+        Connection = "CosmosDBConnection")]
+        public CosmosDBCounter OutputItem { get; set; } = default!;
 
     [Function("GetResumeCounter")]
     //CosmosDBOutput binding to write data to CosmosDB
@@ -35,17 +34,14 @@ Connection = "CosmosDBConnection")]
             containerName: "Counter",
             Connection = "CosmosDBConnection",
             Id="pageView",
-            PartitionKey = "id")]
-        IEnumerable<CosmosDBCounter> inputItems)
+            PartitionKey = "pageView")]
+        ICollection<CosmosDBCounter> inputItems)
 
     {
         var counter = inputItems?.FirstOrDefault();
         var response = req.CreateResponse();
 
         _logger.LogInformation("Function started");
-
-        // Example: logging the counter
-        _logger.LogInformation("Counter object: {Counter}", JsonSerializer.Serialize(counter));
 
         if (counter == null)
         {

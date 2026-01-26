@@ -1,0 +1,11 @@
+{
+  "version": "2.0",
+  "logging": {
+    "logLevel": {
+      "default": "Information",
+      "Host.Results": "Debug",
+      "Host.Bindings": "Trace",
+      "Microsoft.Azure.WebJobs.Extensions.CosmosDB": "Trace"
+    }
+  }
+}
